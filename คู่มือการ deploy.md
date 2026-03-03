@@ -2,7 +2,7 @@
 
 **(Express + Prisma + Supabase + Quasar/Vue)**
 
-คู่มือนี้จัดทำขึ้นสำหรับนักศึกษาเพื่ออธิบายขั้นตอนการนำโปรเจกต์ขึ้นระบบ Cloud (Render & Netlify) โดยใช้ฐานข้อมูล Supabase
+คู่มือนี้จัดทำขึ้นสำหรับนักศึกษาเพื่ออธิบายขั้นตอนการนำโปรเจกต์ขึ้นระบบ Cloud (**Vercel**) โดยใช้ฐานข้อมูล Supabase
 
 ---
 
@@ -10,8 +10,8 @@
 
 ระบบของเราประกอบด้วย 3 ส่วนหลักที่ทำงานร่วมกัน:
 
-1.  **Frontend (Quasar/Vue)**: ฝากไว้ที่ **Netlify** (ทำหน้าที่แสดงผล UI ให้ผู้ใช้)
-2.  **Backend (Express/Node.js)**: ฝากไว้ที่ **Render** (ทำหน้าที่จัดการ Logic และ API)
+1.  **Frontend (Quasar/Vue)**: ฝากไว้ที่ **Vercel** (ทำหน้าที่แสดงผล UI ให้ผู้ใช้)
+2.  **Backend (Express/Node.js)**: ฝากไว้ที่ **Vercel** (ทำหน้าที่จัดการ Logic และ API)
 3.  **Database (PostgreSQL)**: ฝากไว้ที่ **Supabase** (ทำหน้าที่เก็บข้อมูลจริง)
 
 ---
@@ -23,7 +23,8 @@
 - **Git**: สำหรับการส่งโค้ดขึ้น GitHub
 - **Node.js (เวอร์ชัน 18 ขึ้นไป)**: สำหรับรันคำสั่งในเครื่อง
 - **GitHub Account**: สำหรับเก็บ Source Code
-- **Accounts ของบริการ Cloud**: Supabase, Render.com และ Netlify.com
+- **Vercel Account**: สำหรับการ Deploy ทั้ง Frontend และ Backend
+- **Supabase Account**: สำหรับฐานข้อมูล PostgreSQL
 
 ---
 
@@ -89,53 +90,52 @@
 
 ---
 
-## 🚩 ขั้นตอนที่ 3: เตรียม Backend ขึ้นระบบ [Render](https://render.com/)
+## 🚩 ขั้นตอนที่ 3: เตรียม Backend ขึ้นระบบ [Vercel](https://vercel.com/)
 
 1.  **การสมัครสมาชิกรวมถึง Login**:
-    - เข้าหน้าเว็บ [Render Dashboard](https://dashboard.render.com/) และเลือก **Sign up with GitHub**
-2.  **การเชื่อมต่อ Repository**:
-    - Dashboard > **New +** > **Web Service** > เลือก GitHub Repo ของโปรเจกต์นี้
-3.  **วิธีการเข้าไปแก้ไขการตั้งค่า (Configuration)**:
-    - ไปที่ Dashboard > เลือก Service ของคุณ
-    - **Settings**: สำหรับแก้ Build/Start Command และ Root Directory
-    - **Environment**: สำหรับแก้ `DATABASE_URL` และ `PORT`
-4.  ตั้งค่าบริการดังนี้:
-    - **Root Directory**: `backend`
-    - **Runtime**: `Node`
-    - **Build Command**: `npm install && npx prisma generate && npm run build`
-    - **Start Command**: `npm start`
-5.  ไปที่แท็บ **Environment** เพิ่มตัวแปร:
-    - `DATABASE_URL`: วาง URL จาก Supabase
-    - `PORT`: `3000`
-6.  รอจนสถานะเป็น **Live** แล้วจด URL ของ Render ไว้ (เช่น `https://xxx.onrender.com`)
+    - เข้าหน้าเว็บ [Vercel Dashboard](https://vercel.com/dashboard) และเลือก **Continue with GitHub**
+2.  **การสร้าง Project ใหม่**:
+    - กดปุ่ม **Add New > Project**
+    - เลือก GitHub Repository ของโปรเจกต์นี้ และกด **Import**
+3.  **การตั้งค่า (Project Settings)**:
+    - **Project Name**: ตั้งชื่อ เช่น `my-backend-api`
+    - **Framework Preset**: เลือก **Other** (เนื่องจากเป็น Express)
+    - **Root Directory**: เลือกโฟลเดอร์ `backend`
+4.  **การตั้งค่า Environment Variables**:
+    - ไปที่หัวข้อ **Environment Variables**
+    - เพิ่มตัวแปรชื่อ `DATABASE_URL` และใส่ค่า URL จาก Supabase (ที่ได้จากขั้นตอนที่ 1)
+5.  **การ Deploy**:
+    - กดปุ่ม **Deploy** และรอจนระบบทำงานเสร็จ
+6.  จด URL ที่ได้จาก Vercel ไว้ (เช่น `https://my-backend-api.vercel.app`)
 
 ---
 
-## 🚩 ขั้นตอนที่ 4: เตรียม Frontend ขึ้นระบบ [Netlify](https://www.netlify.com/)
+## 🚩 ขั้นตอนที่ 4: เตรียม Frontend ขึ้นระบบ [Vercel](https://vercel.com/)
 
-1.  **การสมัครสมาชิกรวมถึง Login**:
-    - เข้าหน้าเว็บ [Netlify App](https://app.netlify.com/) และเลือก **Login with GitHub**
-2.  **การสร้าง Site ใหม่**:
-    - Dashboard > **Add new site** > **Import an existing project** > **GitHub** > เลือก Repo ของโปรเจกต์นี้
-3.  **วิธีการเข้าไปแก้ไขการตั้งค่า (Configuration)**:
-    - เลือก Site > **Site configuration > Build & deploy > Continuous deployment** (สำหรับแก้ Build settings)
-    - เลือก Site > **Site configuration > Environment variables** (สำหรับแก้ `API_URL`)
-4.  ตั้งค่า Build Settings:
-    - **Base directory**: `frontend`
-    - **Build command**: `npx quasar build`
-    - **Publish directory**: `frontend/dist/spa`
-5.  เพิ่ม Environment Variable:
-    - `API_URL`: ใส่ URL ของ Render (ต้องเติม `/api` ต่อท้ายเสมอ) เช่น `https://xxx.onrender.com/api`
-6.  **การสั่ง Build ใหม่ (Trigger Deploy)**:
-    - หากแก้ไขตัวแปร Env ให้ไปที่แท็บ **Deploys** > **Trigger deploy** > **Clear cache and deploy site**
+1.  **การสร้าง Project ใหม่ (แยกจาก Backend)**:
+    - กลับไปที่ Dashboard และกด **Add New > Project** อีกครั้ง
+    - เลือก Repository เดิม (ตัวเดียวกันกับ Backend)
+2.  **การตั้งค่า (Project Settings)**:
+    - **Project Name**: ตั้งชื่อ เช่น `my-frontend-app`
+    - **Framework Preset**: เลือก **Other** หรือ Vercel อาจจะตรวจเจอว่าเป็น Vite/Vue
+    - **Root Directory**: เลือกโฟลเดอร์ `frontend`
+3.  **การตั้งค่า Build Command**:
+    - **Build Command**: `npx quasar build`
+    - **Output Directory**: `dist/spa`
+4.  **การตั้งค่า Environment Variables**:
+    - เพิ่มตัวแปรชื่อ `API_URL`
+    - ใส่ URL ของ Backend ที่ได้จากขั้นตอนที่ 3 (ต้องเติม `/api` ต่อท้ายเสมอ) เช่น `https://my-backend-api.vercel.app/api`
+5.  **การ Deploy**:
+    - กดปุ่ม **Deploy** และรอจนเสร็จสิ้น
 
 ---
 
 ## 💡 คำแนะนำสำหรับการแก้ปัญหา (Troubleshooting)
 
-- **หน้าเว็บโหลดข้อมูลไม่ได้**: เช็ค `API_URL` ใน Netlify ว่ามี `/api` ต่อท้ายหรือไม่
-- **ตรวจสอบข้อมูลผ่าน API**: คุณสามารถใช้ Browser เปิดไปที่ `URL_ของ_Render/api/tasks` เพื่อดูว่า Backend ดึงข้อมูลจาก Database มาแสดงผลเป็น JSON ได้ถูกต้องหรือไม่
-- **Error P1000**: เช็ครหัสผ่านใน `DATABASE_URL` ว่าพิมพ์ผิดหรือไม่
+- **หน้าเว็บโหลดข้อมูลไม่ได้**: เช็ค `API_URL` ใน Vercel (Frontend Project) ว่าสะกดถูกต้องและมี `/api` ต่อท้ายหรือไม่
+- **API ติด CORS**: ตรวจสอบใน `backend/server.js` ว่ามีการใช้ `cors()` หรือยัง (Vercel Backend ส่วนใหญ่จะไม่มีปัญหานี้ถ้าตั้งค่าถูกต้อง)
+- **ตรวจสอบข้อมูลผ่าน API**: เปิด Browser ไปที่ `URL_ของ_Vercel_Backend/api/demo` เพื่อดูว่า API ตอบกลับหรือไม่
+- **Error P1000**: เช็ครหัสผ่านใน `DATABASE_URL` ใน Vercel (Backend Project) ว่าถูกต้องหรือไม่
 
 ---
 
